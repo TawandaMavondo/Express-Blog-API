@@ -1,9 +1,14 @@
-const Router = require('express').Router();
+
+const express = require('express')
 const User = require('./db/models/user');
 const _ = require('lodash');
 const expressSession = require('express-session');
 const cookieParser = require('cookie-parser');
+const Blog = require('./db/models/blog');
+const Router = express.Router();
 
+Router.use(express.urlencoded({extended:true}));
+Router.use(express.json());
 Router.use(expressSession({resave:false,saveUninitialized:true,secret:"nkdbcjkdcmcknklendjndbdjjdknjdnjncdjcbdjbhsfcxdxsfdbmkgmbngjkbngjdbcjdbc"}));
 
 
@@ -31,12 +36,26 @@ Router.get('/login',(req,res,next)=>{
 
 
 // Example of a private route 
-    Router.get('/data',(req,res,next)=>{
+      
+
+    Router.post('/new/post',(req,res,next)=>{
         if(!req.session.user){
             return res.sendStatus(401);
         }
-        console.log(req.sessionID);
-        return res.send("Welcome "+ req.session.user.username);
+
+            var newBlogPost = new Blog({
+                _creator:req.session.user._id,
+                createdAt:Date.now(),
+                blogText:req.body.blogText,
+                postTittle:req.body.postTittle
+            }
+        );
+        newBlogPost.save().then(post=>{
+            res.send(post);
+        }).catch(err=>{
+            res.status(400).send(err);
+        })
+       
     })
 
 });

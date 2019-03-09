@@ -4,26 +4,30 @@ const bcrypt = require('bcryptjs');
 var UserSchema = new mongoose.Schema({
     firstname:{
         type:String,
-        uppercase:false
+        uppercase:false,
+        trim:true
     },
     surname:{
         type:String,
-        uppercase:false
+        uppercase:false,
+        trim:true
     },
     username:{
         type:String,
         unique:true,
-        minlength:6
+        minlength:6,
+        trim:true
     },
     email:{
         type:String,
-        unique:true
+        unique:true,
+        trim:true
     },
     password:{
         type:String,
-        minlength:6
+        minlength:6,
+        trim:true
     }
-
 });
 
 
@@ -80,6 +84,6 @@ bcrypt.compare(password,user.password).then(res=>{
 
 
 
-var User =  mongoose.model('User',UserSchema);
+var User =  new mongoose.model('User',UserSchema);
 
 module.exports = User;
