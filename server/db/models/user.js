@@ -52,6 +52,31 @@ UserSchema.methods.signUp = function(){
 
 }
 
-var User =  new mongoose.model('User',UserSchema);
+UserSchema.statics.Auth= function(email,password){
+
+return new Promise((resolve,reject)=>{
+    return User.findOne({email}).then(user=>{
+
+bcrypt.compare(password,user.password).then(res=>{
+    if (res){
+        resolve(user)
+    }else{
+        reject({errmsg:"The Password is incorrect please retry"});
+    }
+}).catch(err=>{
+    console.log(err);
+})
+        
+    },(err)=>{
+        reject(err);
+    });
+})
+
+    
+}
+
+
+
+var User =  mongoose.model('User',UserSchema);
 
 module.exports = User;
