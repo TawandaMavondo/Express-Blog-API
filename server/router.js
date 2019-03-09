@@ -35,7 +35,7 @@ Router.get('/login',(req,res,next)=>{
         if(!req.session.user){
             return res.sendStatus(401);
         }
-        
+        console.log(req.sessionID);
         return res.send("Welcome "+ req.session.user.username);
     })
 

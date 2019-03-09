@@ -54,6 +54,9 @@ UserSchema.methods.signUp = function(){
 
 UserSchema.statics.Auth= function(email,password){
 
+    if((email===undefined || null) && (password === undefined || null)){
+        return Promise.reject({errmsg:"Please provide username and password"});
+    }
 return new Promise((resolve,reject)=>{
     return User.findOne({email}).then(user=>{
 
