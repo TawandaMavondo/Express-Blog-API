@@ -34,7 +34,11 @@ Router.get('/login',(req,res,next)=>{
         res.status(401).send(err);
     })
 
-
+// Logout Route 
+Router.get('/logout',isAuth,(req,res,next)=>{  
+    req.session.user = null;
+    res.send("logged out");
+});
 // Creating a blog post NB User must belogged in
     Router.post('/new/post',isAuth,(req,res,next)=>{
             var newBlogPost = new Blog({
@@ -47,6 +51,7 @@ Router.get('/login',(req,res,next)=>{
         newBlogPost.save().then(post=>{
             res.send(post);
         }).catch(err=>{
+
             res.status(400).send(err);
         })
        
