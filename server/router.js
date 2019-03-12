@@ -6,7 +6,7 @@ const expressSession = require('express-session');
 const cookieParser = require('cookie-parser');
 const Blog = require('./db/models/blog');
 const Router = express.Router();
-
+const isAuth = require('./middleware/isAuth');
 Router.use(express.urlencoded({extended:true}));
 Router.use(express.json());
 Router.use(expressSession({resave:false,saveUninitialized:true,secret:"nkdbcjkdcmcknklendjndbdjjdknjdnjncdjcbdjbhsfcxdxsfdbmkgmbngjkbngjdbcjdbc"}));
@@ -35,14 +35,8 @@ Router.get('/login',(req,res,next)=>{
     })
 
 
-// Example of a private route 
-      
-
-    Router.post('/new/post',(req,res,next)=>{
-        if(!req.session.user){
-            return res.sendStatus(401);
-        }
-
+// Creating a blog post NB User must belogged in
+    Router.post('/new/post',isAuth,(req,res,next)=>{
             var newBlogPost = new Blog({
                 _creator:req.session.user._id,
                 createdAt:Date.now(),
@@ -57,6 +51,27 @@ Router.get('/login',(req,res,next)=>{
         })
        
     })
+    // Get an array of all blog post of a certain user /logged in user NB user must be logged in 
+    Router.get("/blog-posts",isAuth,(req,res,next)=>{
+        Blog.findPosts(req.session.user._id).then((post)=>{
+            res.send({post});
+        }).catch(err=>{
+            res.status(400).send(err);
+        })
+    });
+
+    // Delete post from the post of the user who logged in 
+    Router.delete('/delete-post/:id',isAuth,(req,res,next)=>{
+        var id = req.params.id;
+        
+        Blog.deletePost(id,req.session.user._id).then((deleted)=>{
+            deleted.isDeleted = true;
+            res.send(deleted)
+        }).catch(err=>{
+            res.status(400).send(err);
+        })
+
+    });
 
 });
 

@@ -63,7 +63,6 @@ UserSchema.statics.Auth= function(email,password){
     }
 return new Promise((resolve,reject)=>{
     return User.findOne({email}).then(user=>{
-
 bcrypt.compare(password,user.password).then(res=>{
     if (res){
         resolve(user)
