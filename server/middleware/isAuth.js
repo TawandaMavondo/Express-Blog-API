@@ -1,4 +1,4 @@
-// Middleware function that check if the user is authenticated abd if there exist a session
+// Middleware function that check if the user is authenticated and if there exist a session
 var isAuth = function(req,res,next){
     if(!req.session.user){
        
